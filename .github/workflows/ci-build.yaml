@@ -29,15 +29,15 @@ jobs:
       with:
         node-version: 10.16.3
     - run: npm install
-      working-directory: ${{ github.event.inputs.PathToProject }}/ClientApp        
+      working-directory: TailwindTraders.Website/Source/Tailwind.Traders.Web/ClientApp        
     - name: Restore dependencies
-      run: dotnet restore ${{ github.event.inputs.PathToProject }}/Tailwind.Traders.Web.csproj
+      run: dotnet restore TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj
     - name: Build
-      run: dotnet build ${{ github.event.inputs.PathToProject }}/Tailwind.Traders.Web.csproj --configuration ${{ github.event.inputs.BuildConfiguration }}
+      run: dotnet build TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj --configuration Release
     - name: Test
-      run: dotnet test ${{ github.event.inputs.PathToProject }}/Tailwind.Traders.Web.csproj --configuration ${{ github.event.inputs.BuildConfiguration }}
+      run: dotnet test TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj --configuration Release
     - name: Publish
-      run: dotnet publish ${{ github.event.inputs.PathToProject }}/Tailwind.Traders.Web.csproj --configuration ${{ github.event.inputs.BuildConfiguration }} --output ${{ runner.temp }}/Tailwind
+      run: dotnet publish TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj --configuration Release --output ${{ runner.temp }}/Tailwind
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
