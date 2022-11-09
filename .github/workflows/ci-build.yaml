@@ -5,9 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
   
-  env:
-    PathToProject: 'TailwindTraders.Website/Source/Tailwind.Traders.Web' 
-    BuildConfiguration: 'Release'
+env:
+  PathToProject: 'TailwindTraders.Website/Source/Tailwind.Traders.Web' 
+  BuildConfiguration: 'Release'
 
 jobs:
   build:
