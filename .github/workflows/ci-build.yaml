@@ -1,0 +1,35 @@
+Name: .NET Build 
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Use Node 10.16.3
+      uses: actions/setup-node@v2
+      with:
+        node-version: 10.16.3
+    - run: npm install
+      working-directory: TailwindTraders.Website/Source/Tailwind.Traders.Web/ClientApp        
+    - name: Restore dependencies
+      run: dotnet restore TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj
+    - name: Build
+      run: dotnet build TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj --configuration Release
+    - name: Test
+      run: dotnet test TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj --configuration Release
+    - name: Publish
+      run: dotnet publish TailwindTraders.Website/Source/Tailwind.Traders.Web/Tailwind.Traders.Web.csproj --configuration Release --output ${{ runner.temp }}/Tailwind
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: publish
+        path: ${{ runner.temp }}/Tailwind
