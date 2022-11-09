@@ -4,16 +4,10 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-    inputs:
-      PathToProject:
-        description: 'Path where project is found'     
-        required: true
-        default: 'TailwindTraders.Website/Source/Tailwind.Traders.Web'
-        
-      BuildConfiguration:
-        description: 'Build configuration'     
-        required: true
-        default: 'Release'
+  
+  env:
+    PathToProject: 'TailwindTraders.Website/Source/Tailwind.Traders.Web' 
+    BuildConfiguration: 'Release'
 
 jobs:
   build:
@@ -29,15 +23,15 @@ jobs:
       with:
         node-version: 10.16.3
     - run: npm install
-      working-directory: "${{ inputs.PathToProject }}/ClientApp"  
+      working-directory: ${{ env.PathToProject }}/ClientApp
     - name: Restore dependencies
-      run: dotnet restore "${{ inputs.PathToProject }}/Tailwind.Traders.Web.csproj"
+      run: dotnet restore ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj
     - name: Build
-      run: dotnet build "${{ inputs.PathToProject }}/Tailwind.Traders.Web.csproj" --configuration Release
+      run: dotnet build ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
     - name: Test
-      run: dotnet test "${{ inputs.PathToProject }}/Tailwind.Traders.Web.csproj" --configuration Release
+      run: dotnet test ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
     - name: Publish
-      run: dotnet publish "${{ inputs.PathToProject }}/Tailwind.Traders.Web.csproj" --configuration Release --output ${{ runner.temp }}/Tailwind
+      run: dotnet publish ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release --output ${{ runner.temp }}/Tailwind
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
