@@ -1,5 +1,4 @@
-Name: .NET Build 
-
+name: .NET Build 
 on:
   push:
   pull_request:
