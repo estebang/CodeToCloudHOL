@@ -1,7 +1,6 @@
-name: .NET Build 
+name: .NET Build - Status check 
 on:
-  push:
-  
+  pull_request:
 env:
   PathToProject: 'TailwindTraders.Website/Source/Tailwind.Traders.Web' 
   BuildConfiguration: 'Release'
@@ -27,10 +26,3 @@ jobs:
       run: dotnet build ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
     - name: Test
       run: dotnet test ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
-    - name: Publish
-      run: dotnet publish ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release --output ${{ runner.temp }}/Tailwind
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: publish
-        path: ${{ runner.temp }}/Tailwind
