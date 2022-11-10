@@ -35,7 +35,12 @@ jobs:
       with:
         name: publish
         path: ${{ runner.temp }}/Tailwind
-    - name: Deploy to Azure
+    - name: Login to Azure
       uses: azure/login@v1
       with:
         creds: ${{ secrets.SERVICEPRINCIPAL }}
+     - name: 'Run Azure webapp deploy action'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: TechBashWebDemo
+          package: '${{ runner.temp }}/Tailwind'
