@@ -1,7 +1,7 @@
 name: .NET Build 
 on:
   push:
-    branches: [ '*techbash*' ]
+    branches: [ TechBash* ]
   
 env:
   PathToProject: 'TailwindTraders.Website/Source/Tailwind.Traders.Web' 
