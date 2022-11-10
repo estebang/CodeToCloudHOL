@@ -1,0 +1,41 @@
+name: .NET Build 
+on:
+  push:
+    branches: [ TechBash* ]
+  
+env:
+  PathToProject: 'TailwindTraders.Website/Source/Tailwind.Traders.Web' 
+  BuildConfiguration: 'Release'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Use Node 10.16.3
+      uses: actions/setup-node@v2
+      with:
+        node-version: 10.16.3
+    - run: npm install
+      working-directory: ${{ env.PathToProject }}/ClientApp
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj
+    - name: Build
+      run: dotnet build ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
+    - name: Test
+      run: dotnet test ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
+    - name: Publish
+      run: dotnet publish ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release --output ${{ runner.temp }}/Tailwind
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: publish
+        path: ${{ runner.temp }}/Tailwind
+    - name: Deploy to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.SERVICEPRINCIPAL }}
