@@ -16,31 +16,50 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+    
     - name: Use Node 10.16.3
       uses: actions/setup-node@v2
       with:
         node-version: 10.16.3
+    
     - run: npm install
       working-directory: ${{ env.PathToProject }}/ClientApp
+    
     - name: Restore dependencies
       run: dotnet restore ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj
+    
     - name: Build
       run: dotnet build ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
+    
     - name: Test
       run: dotnet test ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release
+    
     - name: Publish
       run: dotnet publish ${{ env.PathToProject }}/Tailwind.Traders.Web.csproj --configuration Release --output ${{ runner.temp }}/Tailwind
+    
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: publish
+        name: .net-app
         path: ${{ runner.temp }}/Tailwind
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.SERVICEPRINCIPAL }}
-    - name: 'Run Azure webapp deploy action'
-      uses: azure/webapps-deploy@v2
-      with: 
-        app-name: TechBashWebDemo
-        package: '${{ runner.temp }}/Tailwind'
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'TechBashWebDemo'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_43FB70E1A5C94830A5463B2E82BDB85A }}
+          package: .
